@@ -1,5 +1,7 @@
+//Part 3
 #include <iostream>
 #include <vector>
+#include <iomanip>
 using namespace std;
 
 struct Appliance {
@@ -28,6 +30,27 @@ void registerAppliance() {
     cout << "Appliance added successfully.\n";
 }
 
+void viewAppliances() {
+    if (appliances.empty()) {
+        cout << "No appliances registered.\n";
+        return;
+    }
+
+    cout << fixed << setprecision(2);
+    cout << "\n#  Name                Watts   Hours   kWh/day\n";
+    cout << "------------------------------------------------\n";
+
+    for (int i = 0; i < appliances.size(); i++) {
+        double kwh = (appliances[i].watts / 1000) * appliances[i].hours;
+
+        cout << i + 1 << ". "
+             << setw(18) << left << appliances[i].name
+             << setw(8) << appliances[i].watts
+             << setw(8) << appliances[i].hours
+             << kwh << endl;
+    }
+}
+
 void showMenu() {
     cout << "\n===== Electrical Load Monitoring System =====\n";
     cout << "1. Register Appliance\n";
@@ -48,6 +71,7 @@ int main() {
 
         switch (choice) {
             case 1: registerAppliance(); break;
+            case 2: viewAppliances(); break;
             case 6:
                 cout << "Goodbye!\n";
                 return 0;
@@ -55,4 +79,6 @@ int main() {
                 cout << "Feature not implemented yet.\n";
         }
     }
+
+    return 0;
 }
