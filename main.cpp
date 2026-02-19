@@ -1,5 +1,32 @@
 #include <iostream>
+#include <vector>
 using namespace std;
+
+struct Appliance {
+    string name;
+    double watts;
+    double hours;
+};
+
+vector<Appliance> appliances;
+
+void registerAppliance() {
+    Appliance a;
+    cin.ignore();
+
+    cout << "Appliance name: ";
+    getline(cin, a.name);
+
+    cout << "Power (watts): ";
+    cin >> a.watts;
+
+    cout << "Hours used per day: ";
+    cin >> a.hours;
+
+    appliances.push_back(a);
+
+    cout << "Appliance added successfully.\n";
+}
 
 void showMenu() {
     cout << "\n===== Electrical Load Monitoring System =====\n";
@@ -20,6 +47,7 @@ int main() {
         cin >> choice;
 
         switch (choice) {
+            case 1: registerAppliance(); break;
             case 6:
                 cout << "Goodbye!\n";
                 return 0;
@@ -27,6 +55,4 @@ int main() {
                 cout << "Feature not implemented yet.\n";
         }
     }
-
-    return 0;
 }
