@@ -13,8 +13,6 @@ struct Appliance {
 vector<Appliance> appliances;
 const string FILE_NAME = "appliances.txt";
 
-
-// Load appliances from file
 void loadFromFile() {
     ifstream file(FILE_NAME);
     if (!file) return;
@@ -31,8 +29,6 @@ void loadFromFile() {
     file.close();
 }
 
-
-// Save appliances to file
 void saveToFile() {
     ofstream file(FILE_NAME);
 
@@ -46,8 +42,6 @@ void saveToFile() {
     cout << "Appliances saved successfully.\n";
 }
 
-
-// Register new appliance
 void registerAppliance() {
     Appliance a;
     cin.ignore();
@@ -66,8 +60,6 @@ void registerAppliance() {
     cout << "Appliance added successfully.\n";
 }
 
-
-// View appliances
 void viewAppliances() {
     if (appliances.empty()) {
         cout << "No appliances registered.\n";
@@ -90,8 +82,6 @@ void viewAppliances() {
     }
 }
 
-
-// Search appliance
 void searchAppliance() {
     cin.ignore();
     string search;
@@ -118,7 +108,6 @@ void searchAppliance() {
 }
 
 
-// Calculate bill (no summary saving yet)
 void calculateBill() {
     if (appliances.empty()) {
         cout << "No appliances available.\n";
@@ -131,21 +120,53 @@ void calculateBill() {
 
     double totalKwh = 0;
 
+    cout << fixed << setprecision(2);
+    cout << "\nAppliance Breakdown:\n";
+    cout << "--------------------------------------\n";
+
     for (int i = 0; i < appliances.size(); i++) {
-        totalKwh += (appliances[i].watts / 1000) * appliances[i].hours;
+        double kwh = (appliances[i].watts / 1000) * appliances[i].hours;
+        totalKwh += kwh;
+
+        cout << appliances[i].name << " - "
+             << kwh << " kWh/day\n";
     }
 
     double dailyCost = totalKwh * tariff;
     double monthlyCost = dailyCost * 30;
 
-    cout << fixed << setprecision(2);
     cout << "\nTotal Daily Energy: " << totalKwh << " kWh\n";
     cout << "Daily Cost: " << dailyCost << endl;
     cout << "Estimated Monthly Cost (30 days): " << monthlyCost << endl;
+
+    char choice;
+    cout << "\nDo you want to save this billing summary? (y/n): ";
+    cin >> choice;
+
+    if (choice == 'y' || choice == 'Y') {
+
+        ofstream file("billing_summary.txt", ios::app);
+
+        file << "\n========== Billing Summary ==========\n";
+
+        for (int i = 0; i < appliances.size(); i++) {
+            double kwh = (appliances[i].watts / 1000) * appliances[i].hours;
+
+            file << appliances[i].name << " - "
+                 << kwh << " kWh/day\n";
+        }
+
+        file << "\nTotal Daily Energy: " << totalKwh << " kWh\n";
+        file << "Daily Cost: " << dailyCost << endl;
+        file << "Estimated Monthly Cost (30 days): " << monthlyCost << endl;
+        file << "=====================================\n";
+
+        file.close();
+
+        cout << "Billing summary saved successfully.\n";
+    }
 }
 
-
-// Menu
 void showMenu() {
     cout << "\n===== Electrical Load Monitoring System =====\n";
     cout << "1. Register Appliance\n";
@@ -157,10 +178,9 @@ void showMenu() {
     cout << "Choose option: ";
 }
 
-
 int main() {
 
-    loadFromFile();   // NEW FEATURE
+    loadFromFile();
 
     int choice;
 
