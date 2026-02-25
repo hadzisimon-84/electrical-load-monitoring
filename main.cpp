@@ -13,6 +13,41 @@ struct Appliance {
 vector<Appliance> appliances;
 const string FILE_NAME = "appliances.txt";
 
+
+// Load appliances from file
+void loadFromFile() {
+    ifstream file(FILE_NAME);
+    if (!file) return;
+
+    Appliance a;
+    while (file >> ws && getline(file, a.name, '|')) {
+        file >> a.watts;
+        file.ignore();
+        file >> a.hours;
+        file.ignore();
+        appliances.push_back(a);
+    }
+
+    file.close();
+}
+
+
+// Save appliances to file
+void saveToFile() {
+    ofstream file(FILE_NAME);
+
+    for (int i = 0; i < appliances.size(); i++) {
+        file << appliances[i].name << "|"
+             << appliances[i].watts << "|"
+             << appliances[i].hours << endl;
+    }
+
+    file.close();
+    cout << "Appliances saved successfully.\n";
+}
+
+
+// Register new appliance
 void registerAppliance() {
     Appliance a;
     cin.ignore();
@@ -31,6 +66,8 @@ void registerAppliance() {
     cout << "Appliance added successfully.\n";
 }
 
+
+// View appliances
 void viewAppliances() {
     if (appliances.empty()) {
         cout << "No appliances registered.\n";
@@ -38,6 +75,7 @@ void viewAppliances() {
     }
 
     cout << fixed << setprecision(2);
+
     cout << "\n#  Name                Watts   Hours   kWh/day\n";
     cout << "------------------------------------------------\n";
 
@@ -52,6 +90,8 @@ void viewAppliances() {
     }
 }
 
+
+// Search appliance
 void searchAppliance() {
     cin.ignore();
     string search;
@@ -77,6 +117,8 @@ void searchAppliance() {
         cout << "Appliance not found.\n";
 }
 
+
+// Calculate bill (no summary saving yet)
 void calculateBill() {
     if (appliances.empty()) {
         cout << "No appliances available.\n";
@@ -102,19 +144,8 @@ void calculateBill() {
     cout << "Estimated Monthly Cost (30 days): " << monthlyCost << endl;
 }
 
-void saveToFile() {
-    ofstream file(FILE_NAME);
 
-    for (int i = 0; i < appliances.size(); i++) {
-        file << appliances[i].name << "|"
-             << appliances[i].watts << "|"
-             << appliances[i].hours << endl;
-    }
-
-    file.close();
-    cout << "Appliances saved successfully.\n";
-}
-
+// Menu
 void showMenu() {
     cout << "\n===== Electrical Load Monitoring System =====\n";
     cout << "1. Register Appliance\n";
@@ -126,7 +157,11 @@ void showMenu() {
     cout << "Choose option: ";
 }
 
+
 int main() {
+
+    loadFromFile();   // NEW FEATURE
+
     int choice;
 
     while (true) {
