@@ -1,4 +1,3 @@
-//Part 3
 #include <iostream>
 #include <vector>
 #include <iomanip>
@@ -51,6 +50,31 @@ void viewAppliances() {
     }
 }
 
+void searchAppliance() {
+    cin.ignore();
+    string search;
+    cout << "Enter appliance name to search: ";
+    getline(cin, search);
+
+    bool found = false;
+
+    for (int i = 0; i < appliances.size(); i++) {
+        if (appliances[i].name.find(search) != string::npos) {
+            double kwh = (appliances[i].watts / 1000) * appliances[i].hours;
+
+            cout << appliances[i].name << " | "
+                 << appliances[i].watts << "W | "
+                 << appliances[i].hours << " hrs | "
+                 << kwh << " kWh/day\n";
+
+            found = true;
+        }
+    }
+
+    if (!found)
+        cout << "Appliance not found.\n";
+}
+
 void showMenu() {
     cout << "\n===== Electrical Load Monitoring System =====\n";
     cout << "1. Register Appliance\n";
@@ -72,6 +96,7 @@ int main() {
         switch (choice) {
             case 1: registerAppliance(); break;
             case 2: viewAppliances(); break;
+            case 3: searchAppliance(); break;
             case 6:
                 cout << "Goodbye!\n";
                 return 0;
