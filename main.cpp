@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <iomanip>
+#include <fstream>
 using namespace std;
 
 struct Appliance {
@@ -10,6 +11,7 @@ struct Appliance {
 };
 
 vector<Appliance> appliances;
+const string FILE_NAME = "appliances.txt";
 
 void registerAppliance() {
     Appliance a;
@@ -100,6 +102,19 @@ void calculateBill() {
     cout << "Estimated Monthly Cost (30 days): " << monthlyCost << endl;
 }
 
+void saveToFile() {
+    ofstream file(FILE_NAME);
+
+    for (int i = 0; i < appliances.size(); i++) {
+        file << appliances[i].name << "|"
+             << appliances[i].watts << "|"
+             << appliances[i].hours << endl;
+    }
+
+    file.close();
+    cout << "Appliances saved successfully.\n";
+}
+
 void showMenu() {
     cout << "\n===== Electrical Load Monitoring System =====\n";
     cout << "1. Register Appliance\n";
@@ -123,11 +138,13 @@ int main() {
             case 2: viewAppliances(); break;
             case 3: searchAppliance(); break;
             case 4: calculateBill(); break;
+            case 5: saveToFile(); break;
             case 6:
+                saveToFile();
                 cout << "Goodbye!\n";
                 return 0;
             default:
-                cout << "Feature not implemented yet.\n";
+                cout << "Invalid choice.\n";
         }
     }
 
