@@ -1,7 +1,9 @@
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <iomanip>
-#include <fstream>
+#include <ctime>
+
 using namespace std;
 
 struct Appliance {
@@ -13,6 +15,8 @@ struct Appliance {
 vector<Appliance> appliances;
 const string FILE_NAME = "appliances.txt";
 
+
+// Load appliances from file
 void loadFromFile() {
     ifstream file(FILE_NAME);
     if (!file) return;
@@ -29,6 +33,8 @@ void loadFromFile() {
     file.close();
 }
 
+
+// Save appliances to file
 void saveToFile() {
     ofstream file(FILE_NAME);
 
@@ -42,9 +48,10 @@ void saveToFile() {
     cout << "Appliances saved successfully.\n";
 }
 
+
+// Register new appliance
 void registerAppliance() {
     Appliance a;
-    cin.ignore();
 
     cout << "Appliance name: ";
     getline(cin, a.name);
@@ -54,12 +61,15 @@ void registerAppliance() {
 
     cout << "Hours used per day: ";
     cin >> a.hours;
+    cin.ignore();
 
     appliances.push_back(a);
 
     cout << "Appliance added successfully.\n";
 }
 
+
+// View appliances
 void viewAppliances() {
     if (appliances.empty()) {
         cout << "No appliances registered.\n";
@@ -82,8 +92,9 @@ void viewAppliances() {
     }
 }
 
+
+// Search appliance
 void searchAppliance() {
-    cin.ignore();
     string search;
     cout << "Enter appliance name to search: ";
     getline(cin, search);
@@ -108,6 +119,7 @@ void searchAppliance() {
 }
 
 
+// Billing calculation
 void calculateBill() {
     if (appliances.empty()) {
         cout << "No appliances available.\n";
@@ -117,12 +129,14 @@ void calculateBill() {
     double tariff;
     cout << "Enter tariff per kWh: ";
     cin >> tariff;
+    cin.ignore();
 
     double totalKwh = 0;
 
     cout << fixed << setprecision(2);
+
     cout << "\nAppliance Breakdown:\n";
-    cout << "--------------------------------------\n";
+    cout << "------------------------------------------------\n";
 
     for (int i = 0; i < appliances.size(); i++) {
         double kwh = (appliances[i].watts / 1000) * appliances[i].hours;
@@ -139,15 +153,28 @@ void calculateBill() {
     cout << "Daily Cost: " << dailyCost << endl;
     cout << "Estimated Monthly Cost (30 days): " << monthlyCost << endl;
 
+    // Ask user to save summary
     char choice;
     cout << "\nDo you want to save this billing summary? (y/n): ";
     cin >> choice;
+    cin.ignore();
 
     if (choice == 'y' || choice == 'Y') {
 
         ofstream file("billing_summary.txt", ios::app);
 
-        file << "\n========== Billing Summary ==========\n";
+        if (!file) {
+            cout << "Error opening billing_summary.txt\n";
+            return;
+        }
+
+        // Get current time
+        time_t now = time(0);
+        char* dt = ctime(&now);
+
+        file << "\n========================================\n";
+        file << "Billing Summary - " << dt;
+        file << "----------------------------------------\n";
 
         for (int i = 0; i < appliances.size(); i++) {
             double kwh = (appliances[i].watts / 1000) * appliances[i].hours;
@@ -159,7 +186,7 @@ void calculateBill() {
         file << "\nTotal Daily Energy: " << totalKwh << " kWh\n";
         file << "Daily Cost: " << dailyCost << endl;
         file << "Estimated Monthly Cost (30 days): " << monthlyCost << endl;
-        file << "=====================================\n";
+        file << "========================================\n";
 
         file.close();
 
@@ -167,6 +194,8 @@ void calculateBill() {
     }
 }
 
+
+// Menu
 void showMenu() {
     cout << "\n===== Electrical Load Monitoring System =====\n";
     cout << "1. Register Appliance\n";
@@ -178,6 +207,7 @@ void showMenu() {
     cout << "Choose option: ";
 }
 
+
 int main() {
 
     loadFromFile();
@@ -187,6 +217,7 @@ int main() {
     while (true) {
         showMenu();
         cin >> choice;
+        cin.ignore();
 
         switch (choice) {
             case 1: registerAppliance(); break;
